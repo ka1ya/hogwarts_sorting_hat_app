@@ -62,13 +62,19 @@ class _NavigationPageState extends State<NavigationPage> {
         children: _widgetOptions,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(
+              Icons.home,
+              color: _selectedIndex != 0 ? Colors.black : Colors.amber[800],
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(
+              Icons.list,
+              color: _selectedIndex == 0 ? Colors.black : Colors.amber[800],
+            ),
             label: 'List',
           ),
         ],

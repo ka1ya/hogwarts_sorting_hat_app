@@ -1,4 +1,6 @@
-class Character {
+import 'package:equatable/equatable.dart';
+
+class Character extends Equatable {
   final String id;
   final String name;
   final String house;
@@ -31,4 +33,38 @@ class Character {
       guess: null,
     );
   }
+
+  Character copyWith({
+    String? id,
+    String? name,
+    String? house,
+    String? dateOfBirth,
+    String? actor,
+    String? species,
+    String? imageUrl,
+    bool? guess,
+  }) {
+    return Character(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      house: house ?? this.house,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      actor: actor ?? this.actor,
+      species: species ?? this.species,
+      imageUrl: imageUrl ?? this.imageUrl,
+      guess: guess ?? this.guess,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        house,
+        dateOfBirth,
+        actor,
+        species,
+        imageUrl,
+        guess,
+      ];
 }

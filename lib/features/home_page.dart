@@ -21,32 +21,17 @@ class _HomePageState extends State<HomePage> {
   void counter(String house, String guessHouse) {
     CharacterState currentState = BlocProvider.of<CharacterBloc>(context).state;
     if (currentState is CharacterLoaded) {
-      Character? updatedCharacter;
       if (house.toLowerCase() == guessHouse.toLowerCase()) {
         BlocProvider.of<ScoreBloc>(context).add(UpdateScore(true));
-        setState(() {
-          updatedCharacter = currentState.characters
-              .firstWhere((character) => character.id == localCharacter!.id);
-          updatedCharacter!.guess = true;
-          currentState.characters
-              .firstWhere((character) => character.id == localCharacter!.id)
-              .guess = true;
-        });
+        BlocProvider.of<CharacterBloc>(context)
+            .add(UpdateCharacter(guess: true, id: localCharacter!.id));
       } else {
         BlocProvider.of<ScoreBloc>(context).add(UpdateScore(false));
-        setState(() {
-          updatedCharacter = currentState.characters
-              .firstWhere((character) => character.id == localCharacter!.id);
-          currentState.characters
-              .firstWhere((character) => character.id == localCharacter!.id)
-              .guess = false;
-          updatedCharacter!.guess = false;
-        });
+        BlocProvider.of<CharacterBloc>(context)
+            .add(UpdateCharacter(guess: false, id: localCharacter!.id));
       }
-      setState(() {
-        localCharacter = updatedCharacter;
-      });
       BlocProvider.of<CharacterBloc>(context).add(GenerateRandomCharacter());
+      setState(() {});
     }
   }
 

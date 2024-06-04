@@ -19,19 +19,6 @@ class _ListPageState extends State<ListPage> {
   TextEditingController? _textEditingController;
 
   List<Character> localCharacters = [];
-  @override
-  void initState() {
-    CharacterState currentState = BlocProvider.of<CharacterBloc>(context).state;
-    if (currentState is CharacterLoaded) {
-      setState(() {
-        localCharacters = currentState.characters
-            .where((character) => character.guess != null)
-            .toList();
-        print('ListCharacters: $localCharacters');
-      });
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,12 +100,10 @@ class _ListPageState extends State<ListPage> {
           Expanded(
             child: BlocBuilder<CharacterBloc, CharacterState>(
               builder: (context, state) {
-                print(state);
                 if (state is CharacterLoaded) {
                   localCharacters = state.characters
                       .where((character) => character.guess != null)
                       .toList();
-                  print('ListCharacters: $localCharacters');
                   return localCharacters.isNotEmpty
                       ? ListView.builder(
                           itemCount: localCharacters.length,

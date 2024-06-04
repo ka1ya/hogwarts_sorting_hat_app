@@ -10,3 +10,10 @@ abstract class CharacterEvent extends Equatable {
 class FetchCharacters extends CharacterEvent {}
 
 class GenerateRandomCharacter extends CharacterEvent {}
+
+class UpdateCharacter extends CharacterEvent {
+  final bool guess;
+  final String id;
+
+  const UpdateCharacter({required this.guess, required this.id});
+}
