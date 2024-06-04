@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hogwarts_sorting_hat_app/bloc/hogwarts_bloc.dart';
 import 'package:hogwarts_sorting_hat_app/bloc/hogwarts_event.dart';
 import 'package:hogwarts_sorting_hat_app/bloc/hogwarts_state.dart';
+import 'package:hogwarts_sorting_hat_app/bloc/score_bloc.dart';
+import 'package:hogwarts_sorting_hat_app/bloc/score_event.dart';
+import 'package:hogwarts_sorting_hat_app/bloc/score_state.dart';
 import 'package:hogwarts_sorting_hat_app/models/character_model.dart';
 import 'package:hogwarts_sorting_hat_app/widgets/score_containers.dart';
 
@@ -12,9 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int failedCounter = 0;
-  int successCounter = 0;
-  int totalCounter = 0;
   Character? localCharacter;
   List<Character> characters = [];
 
@@ -23,19 +23,23 @@ class _HomePageState extends State<HomePage> {
     if (currentState is CharacterLoaded) {
       Character? updatedCharacter;
       if (house.toLowerCase() == guessHouse.toLowerCase()) {
+        BlocProvider.of<ScoreBloc>(context).add(UpdateScore(true));
         setState(() {
-          successCounter++;
-          totalCounter = failedCounter + successCounter;
           updatedCharacter = currentState.characters
               .firstWhere((character) => character.id == localCharacter!.id);
           updatedCharacter!.guess = true;
+          currentState.characters
+              .firstWhere((character) => character.id == localCharacter!.id)
+              .guess = true;
         });
       } else {
+        BlocProvider.of<ScoreBloc>(context).add(UpdateScore(false));
         setState(() {
-          failedCounter++;
-          totalCounter = failedCounter + successCounter;
           updatedCharacter = currentState.characters
               .firstWhere((character) => character.id == localCharacter!.id);
+          currentState.characters
+              .firstWhere((character) => character.id == localCharacter!.id)
+              .guess = false;
           updatedCharacter!.guess = false;
         });
       }
@@ -68,11 +72,7 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () {
               BlocProvider.of<CharacterBloc>(context).add(FetchCharacters());
-              setState(() {
-                failedCounter = 0;
-                successCounter = 0;
-                totalCounter = 0;
-              });
+              BlocProvider.of<ScoreBloc>(context).add(ResetScore());
             },
             child: const Text(
               'Reset',
@@ -90,13 +90,27 @@ class _HomePageState extends State<HomePage> {
           children: [
             const Divider(),
             const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildContainer('$totalCounter', 'Total'),
-                buildContainer('$successCounter', 'Success'),
-                buildContainer('$failedCounter', 'Failed'),
-              ],
+            BlocBuilder<ScoreBloc, ScoreState>(
+              builder: (context, state) {
+                if (state is ScoreUpdated) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      buildContainer('${state.score.total}', 'Total'),
+                      buildContainer('${state.score.success}', 'Success'),
+                      buildContainer('${state.score.failed}', 'Failed'),
+                    ],
+                  );
+                }
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildContainer('0', 'Total'),
+                    buildContainer('0', 'Success'),
+                    buildContainer('0', 'Failed'),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 30),
             BlocBuilder<CharacterBloc, CharacterState>(
@@ -132,9 +146,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                       const SizedBox(height: 10),
                       Text(
-                        'Random Character: ${randomCharacter.name}',
+                        randomCharacter.name,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
+                            fontSize: 18, fontWeight: FontWeight.w700),
                       ),
                     ],
                   );

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hogwarts_sorting_hat_app/bloc/hogwarts_bloc.dart';
-
-import 'features/home_page.dart';
-import 'features/list_page.dart';
-import 'repositories/character_repository.dart';
+import 'package:hogwarts_sorting_hat_app/bloc/score_bloc.dart';
+import 'package:hogwarts_sorting_hat_app/features/home_page.dart';
+import 'package:hogwarts_sorting_hat_app/features/list_page.dart';
+import 'package:hogwarts_sorting_hat_app/repositories/character_repository.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,9 +13,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          CharacterBloc(characterRepository: CharacterRepository()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              CharacterBloc(characterRepository: CharacterRepository()),
+        ),
+        BlocProvider(
+          create: (context) => ScoreBloc(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Hogwarts Sorting Hat',
@@ -44,9 +51,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    ListPage(
-      characters: [],
-    ),
+    ListPage(),
   ];
 
   @override

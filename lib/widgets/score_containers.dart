@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 
 Widget buildContainer(String scoreText, String labelText) {
   return Container(
-    margin: EdgeInsets.all(8.0),
-    padding: EdgeInsets.all(16.0),
+    margin: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.all(16.0),
+    height: 90,
+    width: 100,
     decoration: BoxDecoration(
-      color: Color.fromARGB(255, 211, 211, 211),
-      borderRadius: BorderRadius.circular(8.0),
+      border: Border.all(color: Colors.black, width: 2),
+      borderRadius: BorderRadius.circular(0),
+      color: const Color.fromARGB(255, 233, 233, 233),
     ),
     child: Column(children: [
       Text(
         scoreText,
-        style: TextStyle(color: Colors.black, fontSize: 20),
+        style: const TextStyle(color: Colors.black, fontSize: 20),
       ),
       Text(
         labelText,
-        style: TextStyle(color: Colors.black, fontSize: 16.0),
+        style: const TextStyle(color: Colors.black, fontSize: 16.0),
       ),
     ]),
   );
